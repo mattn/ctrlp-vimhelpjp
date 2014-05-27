@@ -29,8 +29,15 @@ function! s:gettags()
   return copy(s:list)
 endfunction
 
+let s:sortitem = ''
+function! s:sortfunc(lhs, rhs)
+  return stridx(a:lhs, s:sortitem) > stridx(a:rhs, s:sortitem)
+endfunction
+
 function! ctrlp#vimhelpjp#complete(arglead, cmdline, cursorpos)
-  return filter(s:gettags(), 'stridx(v:val, a:arglead) >= 0')
+  let items = filter(s:gettags(), 'stridx(v:val, a:arglead) >= 0')
+  let s:sortitem = a:arglead
+  return sort(items, function('s:sortfunc'))
 endfunction
 
 function! ctrlp#vimhelpjp#init(...)
